@@ -29,18 +29,15 @@ Fecha::Fecha(const char* cad){
 Fecha::operator const char*(){
   setlocale(LC_ALL, "es_ES");
   int wD = 0;
-  const char* fechaCad;
+  char* fechaCad = new char[35];
   std::time_t tiempo_cal = std::time(nullptr);
   std::tm* tiempo = std::localtime(&tiempo_cal);
 
   tiempo->tm_year = this->a - 1900;
   tiempo->tm_mon = this->m - 1;
   tiempo->tm_mday = this->d;
-  wD = std::time_t mktime(&tiempo);
-  if(wD == -1)
-    throw Fecha::Invalida("ERROR: IMPOSIBLE REALIZAR mktime\n");
-  else
-    strftime(fechaCad, 34, "%A %d de %B de &Y ", &tiempo);
+  mktime(&tiempo);
+  strftime(fechaCad, 34, "%A %d de %B de &Y ", &tiempo);
 
   return fechaCad;
 }
@@ -58,10 +55,7 @@ Fecha Fecha::operator += (int days){
   tiempoOper->tm_mon = this->m - 1;
   tiempoOper->tm_year = this->a - 1900;
 
-  mktime(&tiempoOper);
-
-  if(wD == -1)
-    throw Fecha::Invalida("ERROR: IMPOSIBLE REALIZAR mktime\n");
+  std::time_t mktime(&tiempoOper);
 
   int day = tiempoOper->tm_mday;
   int mon = tiempoOper->tm_mon + 1;
@@ -116,11 +110,11 @@ void Fecha::comprobarFecha() const{
   if(this->m < 1 || this->m > 12)
     throw Fecha::Invalida("ERROR, mes fuera de rango");
   switch(this->m){
-    case 1:3:5:7:8:10:12:
+    case 1:case 3:case 5:case 7:case 8:case 10:case 12:
       if(this->d > 31)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 31");
       break;
-    case 4:6:9:11:
+    case 4:case 6:case 9:case 11:
       if(this->d > 30)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 30");
       break;
@@ -146,11 +140,11 @@ void Fecha::comprobarRangoAnnos() const{
 
 bool operator < (const Fecha& a, const Fecha& b){
   bool menor = false;
-  if(a->anno() < b->anno())
+  if(a.anno() < b.anno())
     menor = true;
-  else if(!menor && a->mes() < b->mes())
+  else if(!menor && a.mes() < b.mes())
     menor = true;
-  else if(!menor && a->dia() < b->dia())
+  else if(!menor && a.dia() < b.dia())
     menor = true;
 
   else
@@ -158,7 +152,7 @@ bool operator < (const Fecha& a, const Fecha& b){
 }
 
 bool operator == (const Fecha& a, const Fecha& b){
-  return ((a->dia() == b->dia()) && (a->mes() == b->mes()) && (a->anno() == b->anno()));
+  return ((a.dia() == b.dia()) && (a.mes() == b.mes()) && (a.anno() == b.anno()));
 }
 
 bool operator > (const Fecha& a, const Fecha& b){

@@ -21,8 +21,8 @@ public:
 
   /********************** Constantes ******************************/
 
-  const int AnnoMinimo = 1902;
-  const int AnnoMaximo = 2037;
+  static const int AnnoMinimo = 1902;
+  static const int AnnoMaximo = 2037;
 
   /************************ Métodos *******************************/
 
