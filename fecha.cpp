@@ -26,23 +26,6 @@ Fecha::Fecha(const char* cad){
     throw Fecha::Invalida("ERROR DE CONVERSION\n");
 }
 
-/*
-#include <stdio.h>
-#include <time.h>
-{
-  time_t rawtime;
-  struct tm * timeinfo;
-  char buffer [80];
-
-  time (&rawtime);
-  timeinfo = localtime (&rawtime);
-
-  strftime (buffer,80,"Now it's %I:%M%p.",timeinfo);
-  puts (buffer);
-
-  return 0;
-}
-*/
 Fecha::operator const char*(){
   setlocale(LC_ALL, "es_ES");
   char* fechaCad = new char[35];
