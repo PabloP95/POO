@@ -26,40 +26,58 @@ Fecha::Fecha(const char* cad){
     throw Fecha::Invalida("ERROR DE CONVERSION\n");
 }
 
+/*
+#include <stdio.h>
+#include <time.h>
+{
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer [80];
+
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+
+  strftime (buffer,80,"Now it's %I:%M%p.",timeinfo);
+  puts (buffer);
+
+  return 0;
+}
+*/
 Fecha::operator const char*(){
   setlocale(LC_ALL, "es_ES");
-  int wD = 0;
   char* fechaCad = new char[35];
-  std::time_t tiempo_cal = std::time(nullptr);
-  std::tm* tiempo = std::localtime(&tiempo_cal);
+  std::time_t tiempo_cal = time(nullptr);
+  std::tm* tiempo = localtime(&tiempo_cal);
 
   tiempo->tm_year = this->a - 1900;
   tiempo->tm_mon = this->m - 1;
   tiempo->tm_mday = this->d;
-  mktime(&tiempo);
-  strftime(fechaCad, 34, "%A %d de %B de &Y ", &tiempo);
+  tiempo_cal = mktime(tiempo);
+  tm* t = localtime(&tiempo_cal);
+  strftime(fechaCad, 34, "%A %d de %B de &Y ", t);
 
   return fechaCad;
 }
 
-int Fecha::dia() const noexcept {return this->d;}
-int Fecha::mes() const noexcept {return this->m;}
-int Fecha::anno() const noexcept {return this->a;}
+inline int Fecha::dia() const noexcept {return this->d;}
+inline int Fecha::mes() const noexcept {return this->m;}
+inline int Fecha::anno() const noexcept {return this->a;}
 
 Fecha Fecha::operator += (int days){
   std::time_t tiempo_cal = std::time(nullptr);
   std::tm* tiempoOper = std::localtime(&tiempo_cal);
-  int wD = 0;
 
   tiempoOper->tm_mday = this->d + days;
   tiempoOper->tm_mon = this->m - 1;
   tiempoOper->tm_year = this->a - 1900;
 
-  std::time_t mktime(&tiempoOper);
+  tiempo_cal = mktime(tiempoOper);
+  tm* Suma = localtime(&tiempo_cal);
 
-  int day = tiempoOper->tm_mday;
-  int mon = tiempoOper->tm_mon + 1;
-  int year = tiempoOper->tm_year + 1900;
+  int day = Suma->tm_mday;
+  int mon = Suma->tm_mon + 1;
+  int year = Suma->tm_year + 1900;
+
   *this = Fecha(day, mon, year);
 
   return *this;
@@ -139,16 +157,14 @@ void Fecha::comprobarRangoAnnos() const{
 }
 
 bool operator < (const Fecha& a, const Fecha& b){
-  bool menor = false;
   if(a.anno() < b.anno())
-    menor = true;
-  else if(!menor && a.mes() < b.mes())
-    menor = true;
-  else if(!menor && a.dia() < b.dia())
-    menor = true;
-
+    return true;
+  else if(a.mes() < b.mes())
+    return true;
+  else if(a.dia() < b.dia())
+    return true;
   else
-    return menor;
+    return false;
 }
 
 bool operator == (const Fecha& a, const Fecha& b){

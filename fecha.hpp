@@ -1,10 +1,11 @@
-#ifndef FECHA_HPP_
-#define FECHA_HPP_
+#ifndef FECHA_HPP
+#define FECHA_HPP
 #include <cstdio>
 #include <ctime>
 #include <clocale>
 
 class Fecha{
+  public:
   class Invalida{
   public:
     Invalida(const char* razon):razon(razon){}
@@ -12,7 +13,7 @@ class Fecha{
   private:
     const char* razon;
   };
-public:
+
 
   /********************** Constructores ***************************/
 
