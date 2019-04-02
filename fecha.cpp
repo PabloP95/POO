@@ -1,6 +1,5 @@
 #include "fecha.hpp"
 
-const char* Fecha::Invalida::por_que(){return razon;}
 
 Fecha::Fecha(int d, int m, int a): d(d), m(m), a(a){
   if(d == 0 || m == 0 || a == 0){
@@ -32,9 +31,9 @@ Fecha::operator const char*(){
   std::time_t tiempo_cal = time(nullptr);
   std::tm* tiempo = localtime(&tiempo_cal);
 
-  tiempo->tm_year = this->a - 1900;
-  tiempo->tm_mon = this->m - 1;
-  tiempo->tm_mday = this->d;
+  tiempo->tm_year = a - 1900;
+  tiempo->tm_mon = m - 1;
+  tiempo->tm_mday = d;
   tiempo_cal = mktime(tiempo);
   tm* t = localtime(&tiempo_cal);
   strftime(fechaCad, 34, "%A %d de %B de &Y ", t);
@@ -42,17 +41,17 @@ Fecha::operator const char*(){
   return fechaCad;
 }
 
-inline int Fecha::dia() const noexcept {return this->d;}
-inline int Fecha::mes() const noexcept {return this->m;}
-inline int Fecha::anno() const noexcept {return this->a;}
+inline int Fecha::dia() const noexcept {return d;}
+inline int Fecha::mes() const noexcept {return m;}
+inline int Fecha::anno() const noexcept {return a;}
 
-Fecha Fecha::operator += (int days){
+Fecha& Fecha::operator += (int days){
   std::time_t tiempo_cal = std::time(nullptr);
   std::tm* tiempoOper = std::localtime(&tiempo_cal);
 
-  tiempoOper->tm_mday = this->d + days;
-  tiempoOper->tm_mon = this->m - 1;
-  tiempoOper->tm_year = this->a - 1900;
+  tiempoOper->tm_mday = d + days;
+  tiempoOper->tm_mon = m - 1;
+  tiempoOper->tm_year = a - 1900;
 
   tiempo_cal = mktime(tiempoOper);
   tm* Suma = localtime(&tiempo_cal);
@@ -66,19 +65,19 @@ Fecha Fecha::operator += (int days){
   return *this;
 }
 
-Fecha Fecha::operator -=(int days){
+Fecha& Fecha::operator -=(int days){
   *this += -days;
   return *this;
 }
 
 Fecha Fecha::operator +(int days){
-  Fecha t(*this);
-  t += days;
-  return t;
+  Fecha tmp = *this;
+  tmp += days;
+  return tmp;
 }
 
 Fecha Fecha::operator -(int days){
-  Fecha t(*this);
+  Fecha t = *this;
   t += -days;
   return t;
 }
@@ -108,23 +107,23 @@ Fecha Fecha::operator--(int){
 //Abril, Junio, Septiembre y Noviembre
 void Fecha::comprobarFecha() const{
   comprobarRangoAnnos();
-  if(this->m < 1 || this->m > 12)
+  if(m < 1 || m > 12)
     throw Fecha::Invalida("ERROR, mes fuera de rango");
-  switch(this->m){
+  switch(m){
     case 1:case 3:case 5:case 7:case 8:case 10:case 12:
-      if(this->d > 31)
+      if(d > 31)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 31");
       break;
     case 4:case 6:case 9:case 11:
-      if(this->d > 30)
+      if(d > 30)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 30");
       break;
     case 2:
       if(comprobarAnnoBisiesto()){
-        if(this->d > 29)
+        if(d > 29)
           throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 29");
       }
-      else if(this->d > 28)
+      else if(d > 28)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 28");
       break;
   }
@@ -135,7 +134,7 @@ bool Fecha::comprobarAnnoBisiesto() const{
 }
 
 void Fecha::comprobarRangoAnnos() const{
-  if(this->a < Fecha::AnnoMinimo || this->a > Fecha::AnnoMaximo)
+  if(a < Fecha::AnnoMinimo || a > Fecha::AnnoMaximo)
     throw Fecha::Invalida("ERROR: Año fuera de rango");
 }
 
@@ -168,4 +167,10 @@ bool operator >= (const Fecha& a, const Fecha& b){
 
 bool operator != (const Fecha& a, const Fecha& b){
   return !(a==b);
+}
+
+Fecha::Invalida::Invalida(const char* razon):razon(razon){}
+
+const char* Fecha::Invalida::por_que() const{
+  return razon;
 }

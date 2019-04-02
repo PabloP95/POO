@@ -1,18 +1,19 @@
-#ifndef FECHA_HPP
-#define FECHA_HPP
+#ifndef FECHA_HPP_
+#define FECHA_HPP_
 #include <cstdio>
 #include <ctime>
 #include <clocale>
 
 class Fecha{
   public:
-  class Invalida{
-  public:
-    Invalida(const char* razon):razon(razon){}
-    const char* por_que();
-  private:
-    const char* razon;
-  };
+
+    class Invalida{
+      public:
+        Invalida(const char* razon);
+        const char* por_que() const;
+      private:
+        const char* razon;
+      };
 
 
   /********************** Constructores ***************************/
@@ -34,8 +35,8 @@ class Fecha{
 
   /********************** Métodos aritméticos **********************/
 
-  Fecha operator +=(int days);
-  Fecha operator -=(int days);
+  Fecha& operator +=(int days);
+  Fecha& operator -=(int days);
   Fecha operator + (int days);
   Fecha operator - (int days);
   Fecha& operator ++();

@@ -3,41 +3,57 @@
 #include <cstring>
 #include <stdexcept>
 class Cadena{
-public:
-  Cadena(size_t tam = 0, char* s = ' ');
-  Cadena(const Cadena& cad);
-  Cadena(const char* c);
+  public:
 
-  Cadena operator=(const Cadena& cad);
-  Cadena operator const char*();
+    /******************* Constructores ******************/
 
-  inline size_t length() const noexcept;
-  Cadena operator+=(const Cadena& b);
-  Cadena operator+();
+    explicit Cadena(size_t tam = 0, char relleno = ' ');
+    Cadena(const Cadena& cad);
+    Cadena(const char* c);
+    Cadena(const Cadena& cad, const size_t indice, const size_t n);
 
-  char& operator[] (size_t pos) noexcept;
-  const char& operator[] (size_t pos) const noexcept;
+    /** Operadores de asignación y conversión **/
+    Cadena& operator=(const Cadena& cad);
+    Cadena& operator=(const char* chain);
+    operator const char*();
+    inline const char* c_str() const noexcept{return s_;}
 
-  char& at(size_t pos);
-  const char& at(size_t pos) const;
+    /** Método para obtener la longitud de una cadena **/
+    inline size_t length() const noexcept{
+      return tam_;
+    }
 
-  Cadena substr(size_t indice, size_t tam);
-  ~Cadena();
-private:
-  char* s_;
-  size_t tam_;
+    /** Método para concatenar cadenas **/
+    Cadena& operator+=(const Cadena& b);
+
+    /************* Operadores de acceso ***************/
+    char& operator[] (size_t pos) noexcept;
+    const char& operator[] (size_t pos) const noexcept;
+
+    char& at(size_t pos);
+    const char& at(size_t pos) const;
+
+    /********** Método para obtener una subcadena *******/
+    Cadena substr(size_t indice, size_t n);
+
+    /******************** Destructor ********************/
+    ~Cadena();
+
+  private:
+    char* s_;
+    size_t tam_;
 };
 
+/************ Operadores de comparación ******************/
+
 bool operator ==(const Cadena& a, const Cadena& b);
-
 bool operator !=(const Cadena& a, const Cadena& b);
-
 bool operator >(const Cadena& a, const Cadena& b);
-
 bool operator <(const Cadena& a, const Cadena& b);
-
 bool operator >= (const Cadena& a, const Cadena& b);
-
 bool operator <= (const Cadena& a, const Cadena& b);
+
+/** Segundo método para concatenar cadenas **/
+Cadena operator+(const Cadena& a, const Cadena& b);
 
 #endif
