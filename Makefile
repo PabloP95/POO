@@ -21,39 +21,39 @@ VPATH = ../Tests-auto:.
 
 all: test-P0-auto test-P0-consola $(EXES)
 
-fecha_check: fecha_check.o $(COMMONOBJS)
-		@echo "(LINK) fecha_check.o"
-		@$(CXX) -o $@ $^ $(CLANGLIBS) $(LLVMLDFLAGS)
+fecha_check:
+	$(MAKE) -f Make_check.mk $@
 
-fecha_check.o: $(COMMONOBJS) fecha.hpp fecha.cpp
+cadena_check:
+	$(MAKE) -f Make_check.mk $@
 
-cadena_check: cadena_check.o $(COMMONOBJS)
-		@echo "(LINK) cadena_check.o"
-		@$(CXX) -o $@ $^ $(CLANGLIBS) $(LLVMLDFLAGS)
+check_Fecha:
+	$(MAKE) -f Make_check.mk $@
 
-cadena_check.o : $(COMMONOBJS) cadena.hpp cadena.cpp
+check_Cadena:
+	$(MAKE) -f Make_check.mk $@
 
-check_Fecha: fecha_check
-		@echo "Verificando fecha.cpp ..."
-		@./fecha_check -extra_arg="std=c++11" fecha.cpp --
+valgrind: test-P0-consola test-P0-auto
+	valgrind --quiet ./test-P0-auto --logger=minimal
+	valgrind --quiet ./test-P0-consola
 
-check_Cadena: cadena_check
-		@echo "Verificando cadena.cpp ..."
-		@./cadena_check -extra_arg="std=c++11" cadena.cpp --
+test-P0-auto: test-caso0-fecha-auto.o test-caso0-cadena-auto.o \
+		test-auto.o cadena.o fecha.o
 
-test-P0-auto: $(OBJETOS)
-		@$(CXX) -o $@  $(LDFLAGS) $(OBJETOS)
-
-test-P0-consola: test-P0-consola.o fecha.o cadena.o
-			@$(CXX) -o $@  $(LDFLAGS) $^
 
 test-caso0-fecha-auto.o test-caso0-cadena-auto.o test-auto.o: \
-		test-caso0-fecha-auto.cpp test-caso0-cadena-auto.cpp \
-		test-auto.cpp test-auto.hpp fecha.hpp cadena.hpp
+	test-caso0-fecha-auto.cpp test-caso0-cadena-auto.cpp \
+	test-auto.cpp test-auto.hpp fecha.hpp cadena.hpp
 
 fecha.o: fecha.hpp fecha.cpp
 cadena.o: cadena.hpp cadena.cpp
 test-P0-consola.o: fecha.hpp cadena.hpp
+
+
+test-P0-consola: test-P0-consola.o fecha.o cadena.o
+			@$(CXX) -o $@  $(LDFLAGS) $^
+
+
 
 clean:
 	@echo "Limpiando ..."
