@@ -18,7 +18,7 @@ class Fecha{
 
   /********************** Constructores ***************************/
 
-  explicit Fecha(int d = 0, int m = 0, int a = 0);
+  explicit Fecha(int dia = 0, int mes = 0, int anno = 0);
   Fecha(const char* cad);
 
   /********************** Constantes ******************************/
@@ -28,7 +28,7 @@ class Fecha{
 
   /************************ Métodos *******************************/
 
-  operator const char*();
+  operator const char*() const;
   int dia() const noexcept;
   int mes() const noexcept;
   int anno() const noexcept;
@@ -37,7 +37,7 @@ class Fecha{
 
   Fecha& operator +=(int days);
   Fecha& operator -=(int days);
-  Fecha operator + (int days);
+  Fecha operator + (int days) const;
   Fecha operator - (int days);
   Fecha& operator ++();
   Fecha operator ++(int);

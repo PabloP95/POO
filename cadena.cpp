@@ -55,7 +55,7 @@ Cadena& Cadena::operator=(const char* chain){
   return *this;
 }
 
-Cadena::operator const char*(){
+Cadena::operator const char*() const{
     return s_;
 }
 
@@ -89,15 +89,15 @@ char& Cadena::at(size_t pos){
   return s_[pos];
 }
 
-inline const char& Cadena::operator[](size_t pos) const noexcept{
+const char& Cadena::operator[](unsigned pos) const noexcept{
   return s_[pos];
 }
 
-inline char& Cadena::operator[](size_t pos) noexcept{
+char& Cadena::operator[](unsigned pos) noexcept{
   return s_[pos];
 }
 
-Cadena Cadena::substr(size_t indice, size_t n){
+Cadena Cadena::substr(size_t indice, size_t n) const{
   if(indice >= tam_ || n > tam_ - indice)
     throw std::out_of_range("Indice fuera de rango");
   return Cadena(*this, indice, n);

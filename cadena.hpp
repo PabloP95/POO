@@ -15,7 +15,7 @@ class Cadena{
     /** Operadores de asignación y conversión **/
     Cadena& operator=(const Cadena& cad);
     Cadena& operator=(const char* chain);
-    operator const char*();
+    operator const char*() const;
     inline const char* c_str() const noexcept{return s_;}
 
     /** Método para obtener la longitud de una cadena **/
@@ -27,14 +27,14 @@ class Cadena{
     Cadena& operator+=(const Cadena& b);
 
     /************* Operadores de acceso ***************/
-    char& operator[] (size_t pos) noexcept;
-    const char& operator[] (size_t pos) const noexcept;
+    char& operator[] (unsigned pos) noexcept;
+    const char& operator[] (unsigned pos) const noexcept;
 
     char& at(size_t pos);
     const char& at(size_t pos) const;
 
     /********** Método para obtener una subcadena *******/
-    Cadena substr(size_t indice, size_t n);
+    Cadena substr(size_t indice, size_t n) const;
 
     /******************** Destructor ********************/
     ~Cadena();

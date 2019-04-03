@@ -1,8 +1,7 @@
 #include "fecha.hpp"
 
 
-Fecha::Fecha(int d, int m, int a): d(d), m(m), a(a){
-  if(d == 0 || m == 0 || a == 0){
+Fecha::Fecha(int dia, int mes, int anno): d(dia), m(mes), a(anno){
     std::time_t tiempo_cal = std::time(nullptr);
     std::tm* tiempo_descompuesto = std::localtime(&tiempo_cal);
     if(d == 0)
@@ -11,9 +10,8 @@ Fecha::Fecha(int d, int m, int a): d(d), m(m), a(a){
       m = tiempo_descompuesto->tm_mon + 1;
     if(a == 0)
       a = tiempo_descompuesto->tm_year + 1900;
-  }
-  else
-      comprobarFecha();
+
+    comprobarFecha();
 }
 
 
@@ -25,18 +23,19 @@ Fecha::Fecha(const char* cad){
     throw Fecha::Invalida("ERROR DE CONVERSION\n");
 }
 
-Fecha::operator const char*(){
-  setlocale(LC_ALL, "es_ES");
-  char* fechaCad = new char[35];
-  std::time_t tiempo_cal = time(nullptr);
-  std::tm* tiempo = localtime(&tiempo_cal);
+Fecha::operator const char*() const{
 
-  tiempo->tm_year = a - 1900;
-  tiempo->tm_mon = m - 1;
-  tiempo->tm_mday = d;
-  tiempo_cal = mktime(tiempo);
-  tm* t = localtime(&tiempo_cal);
-  strftime(fechaCad, 34, "%A %d de %B de &Y ", t);
+  setlocale(LC_ALL, "es_ES");
+  static char fechaCad[36];
+
+  tm t = {0, 0, 0, d, m - 1, a - 1900, 0, 0, 0};
+  static const char* semana[] = {"domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"};
+  static const char* mes[] = {"", "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "septiembre", "octubre", "noviembre", "diciembre"};
+
+  mktime(&t);
+  int diasem = t.tm_wday;
+
+  sprintf(fechaCad, "%s %d de %s del %d", semana[diasem], d, mes[m], a);
 
   return fechaCad;
 }
@@ -70,7 +69,7 @@ Fecha& Fecha::operator -=(int days){
   return *this;
 }
 
-Fecha Fecha::operator +(int days){
+Fecha Fecha::operator +(int days) const{
   Fecha tmp = *this;
   tmp += days;
   return tmp;
