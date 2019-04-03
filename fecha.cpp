@@ -4,6 +4,7 @@
 Fecha::Fecha(int dia, int mes, int anno): d(dia), m(mes), a(anno){
     std::time_t tiempo_cal = std::time(nullptr);
     std::tm* tiempo_descompuesto = std::localtime(&tiempo_cal);
+
     if(d == 0)
       d = tiempo_descompuesto->tm_mday;
     if(m == 0)
@@ -29,8 +30,8 @@ Fecha::operator const char*() const{
   static char fechaCad[36];
 
   tm t = {0, 0, 0, d, m - 1, a - 1900, 0, 0, 0};
-  static const char* semana[] = {"domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"};
-  static const char* mes[] = {"", "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "septiembre", "octubre", "noviembre", "diciembre"};
+  static const char* semana[7] = {"domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"};
+  static const char* mes[13] = {"", "enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"};
 
   mktime(&t);
   int diasem = t.tm_wday;
@@ -103,7 +104,7 @@ Fecha Fecha::operator--(int){
   *this += -1;
   return t;
 }
-//Abril, Junio, Septiembre y Noviembre
+
 void Fecha::comprobarFecha() const{
   comprobarRangoAnnos();
   if(m < 1 || m > 12)
@@ -117,7 +118,7 @@ void Fecha::comprobarFecha() const{
       if(d > 30)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 30");
       break;
-    case 2:
+    case 2:{
       if(comprobarAnnoBisiesto()){
         if(d > 29)
           throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 29");
@@ -125,6 +126,7 @@ void Fecha::comprobarFecha() const{
       else if(d > 28)
         throw Fecha::Invalida("ERROR, el numero de dias debe encontrarse entre 1 y 28");
       break;
+    }
   }
 }
 
