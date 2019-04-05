@@ -32,7 +32,7 @@ class Fecha{
   int dia() const noexcept;
   int mes() const noexcept;
   int anno() const noexcept;
-  const char* cad() const;
+  const char* cadena() const;
 
   /********************** Métodos aritméticos **********************/
 
@@ -44,6 +44,10 @@ class Fecha{
   Fecha operator ++(int);
   Fecha& operator --();
   Fecha operator --(int);
+
+  /******************* Entrada/Salida ******************************/
+  friend std::istream& operator >> (std::istream& os, Fecha& a);
+  friend std::ostream& operator << (std::ostream& os, const Fecha& a);
 
 private:
     int d, m, a;
@@ -61,7 +65,4 @@ bool operator <= (const Fecha& a, const Fecha& b);
 bool operator >= (const Fecha& a, const Fecha& b);
 bool operator != (const Fecha& a, const Fecha& b);
 
-
-friend std::istream& operator >> (istream& os, Fecha& a);
-friend std::ostream& operator <<(ostream& os, const Fecha& a);
 #endif

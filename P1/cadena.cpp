@@ -35,6 +35,17 @@ Cadena::Cadena(const Cadena& cad, const size_t indice, const size_t n){
   s_[tam_] = 0;
 }
 
+
+Cadena::Cadena(Cadena&& cad){
+    s_ = cad.s_;
+    tam_ = cad.tam_;
+    cad.tam_ = 0;
+    cad.s_ = nullptr;
+    cad.s_ = new char[1];
+    cad.s_[0] = '\0';
+
+}
+
 Cadena& Cadena::operator=(const Cadena& cad){
   if(strcmp(s_, cad.s_) != 0){
     delete[] s_;
@@ -55,9 +66,19 @@ Cadena& Cadena::operator=(const char* chain){
   return *this;
 }
 
-Cadena::operator const char*() const{
-    return s_;
+Cadena& Cadena::operator=(Cadena&& cad){
+  if(this != &cad){
+    s_ = cad.s_;
+    tam_ = cad.tam_;
+    cad.tam_ = 0;
+    cad.s_ = nullptr;
+    cad.s_ = new char[1];
+    cad.s_[0] = '\0';
+  }
+
+  return *this;
 }
+
 
 Cadena& Cadena::operator+=(const Cadena& b){
   char* tmp = new char[tam_ + 1];
@@ -126,6 +147,21 @@ bool operator <= (const Cadena& a, const Cadena& b){
 
 bool operator >= (const Cadena& a, const Cadena& b){
   return !(a < b);
+}
+
+std::istream& operator >> (std::istream& is, Cadena& a){
+  char* tmp = new char[33];
+  tmp[0] = '\0';
+  is.width(33);
+  is >> tmp;
+  a = tmp;
+  delete[] tmp;
+  return is;
+}
+
+std::ostream& operator << (std::ostream& os, const Cadena& a){
+  os << a.c_str();
+  return os;
 }
 
 Cadena::~Cadena(){

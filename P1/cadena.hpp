@@ -2,6 +2,7 @@
 #define CADENA_HPP
 #include <cstring>
 #include <stdexcept>
+#include <iterator>
 class Cadena{
   public:
 
@@ -11,11 +12,12 @@ class Cadena{
     Cadena(const Cadena& cad);
     Cadena(const char* c);
     Cadena(const Cadena& cad, const size_t indice, const size_t n);
+    Cadena(Cadena&& cad);
 
     /** Operadores de asignación y conversión **/
     Cadena& operator=(const Cadena& cad);
     Cadena& operator=(const char* chain);
-    operator const char*() const;
+    Cadena& operator= (Cadena&& cad);
     inline const char* c_str() const noexcept{return s_;}
 
     /** Método para obtener la longitud de una cadena **/
@@ -36,6 +38,27 @@ class Cadena{
     /********** Método para obtener una subcadena *******/
     Cadena substr(size_t indice, size_t n) const;
 
+    /******************** Iteradores ********************/
+    typedef char* iterator;
+    typedef const char* const_iterator;
+    typedef std::reverse_iterator<iterator> reverse_iterator;
+    typedef std::reverse_iterator <const_iterator> const_reverse_iterator;
+
+    /** Sobreescritura de los metodos de los iteradores **/
+
+    iterator begin() const {return s_;}
+    iterator end() const {return s_ + tam_;}
+    const_iterator cbegin() const {return begin();}
+    const_iterator cend() const {return end();}
+
+    const_reverse_iterator rbegin() const {return const_reverse_iterator(end());}
+    const_reverse_iterator rend() const {return const_reverse_iterator(begin());}
+    reverse_iterator rbegin() {return reverse_iterator(end());}
+    reverse_iterator rend() {return reverse_iterator(begin());}
+
+    const_reverse_iterator crbegin() const {return const_reverse_iterator(end());}
+    const_reverse_iterator crend() const {return const_reverse_iterator(begin());}
+
     /******************** Destructor ********************/
     ~Cadena();
 
@@ -55,5 +78,10 @@ bool operator <= (const Cadena& a, const Cadena& b);
 
 /** Segundo método para concatenar cadenas **/
 Cadena operator+(const Cadena& a, const Cadena& b);
+
+/******************* Entrada/Salida *****************/
+std::istream& operator >> (std::istream& os, Cadena& a);
+std::ostream& operator << (std::ostream& os, const Cadena& a);
+
 
 #endif
