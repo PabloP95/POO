@@ -30,7 +30,7 @@ public:
 
   Clave(const char* c);
   Cadena clave() const {return key;}
-  bool verifica(const char* cv);
+  bool verifica(const char* cv) const;
 private:
   Cadena key;
   char salt[2];
@@ -47,7 +47,7 @@ public:
   };
   typedef std::map<Numero, Tarjeta*> Tarjetas;
   typedef std::unordered_map<Articulo*, unsigned int> Articulos;
-  Usuario(const Cadena& id, Cadena nombre, Cadena apellidos, Cadena direccion, Clave passwd);
+  Usuario(const Cadena& id, const Cadena& nombre, const Cadena& apellidos, const Cadena& direccion, const Clave& passwd);
   Usuario(const Usuario& u) = delete;
   Usuario& operator=(const Usuario& u) = delete;
 

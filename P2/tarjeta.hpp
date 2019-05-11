@@ -8,6 +8,8 @@
 #include <cctype>
 #include <iostream>
 #include <cstdlib>
+#include <functional>
+#include <algorithm>
 #include <set>
 
 class Usuario;
@@ -24,38 +26,41 @@ public:
     Razon r_;
   };
 
-  Numero(Cadena num);
-  operator const char*() const{return num_.c_str();}
+  Numero(Cadena numero);
+  operator const char*() const{return numero_.c_str();}
 private:
-  Cadena num_;
+  Cadena numero_;
 };
 
-bool operator <(const Numero& a, const Numero& b){
-  return (strcmp(a, b) < 0);
-}
+struct EsBlanco{
+  bool operator()(char c) const;
+};
 
+struct EsDigito:std::unary_function<char, bool>{
+  bool operator()(char c) const;
+};
 
 class Tarjeta{
 public:
   class Caducada{
   public:
-    Caducada(Fecha f):f(f){}
-    Fecha cuando() const{return f;}
+    Caducada(Fecha f):f_(f){}
+    Fecha cuando() const{return f_;}
   private:
-    Fecha f;
+    Fecha f_;
   };
   class Num_duplicado{
   public:
-    Num_duplicado(Numero nDup): nDup(nDup){}
-    Numero duplicado() const{return nDup;}
+    Num_duplicado(Numero nDup): nDup_(nDup){}
+    Numero que() const{return nDup_;}
   private:
-    Numero nDup;
+    Numero nDup_;
   };
 
   class Desactivada{};
 
   enum Tipo{Otro, VISA, Mastercard, Maestro, JCB, AmericanExpress};
-  Tarjeta(const Numero& num, Usuario& user, Fecha fecha_caducidad);
+  Tarjeta(Numero num, Usuario& user, Fecha fecCad);
   Tarjeta(const Tarjeta& t) = delete;
   Tarjeta& operator=(const Tarjeta& t) = delete;
 
@@ -72,21 +77,24 @@ public:
   }
   bool activa() const{return active;}
   bool activa(bool act = true);
-  void anula_titular();
   ~Tarjeta();
+
 private:
   static std::set<Numero> numeros_;
   Tipo t_;
   Numero n;
-  Usuario* u;
+  const Usuario* u;
   Fecha fec;
   bool active;
   Cadena titular_fac;
+  void anula_titular();
+  friend class Usuario;
 };
 
 std::ostream& operator <<(std::ostream& os, const Tarjeta& t);
-bool operator < (const Tarjeta& a, const Tarjeta& b){
-  return (a.numero() < b.numero());
-}
+std::ostream& operator <<(std::ostream&, const Tarjeta::Tipo& type);
+bool operator < (const Tarjeta& a, const Tarjeta& b);
+
+bool operator < (const Numero& a, const Numero& b);
 
 #endif

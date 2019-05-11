@@ -16,7 +16,7 @@ Clave::Clave(const char* c){
     throw Clave::Incorrecta(ERROR_CRYPT);
 }
 
-bool Clave::verifica(const char* possible_passwd){
+bool Clave::verifica(const char* possible_passwd) const{
   if(const char* posible_contrasena = crypt(possible_passwd, key.c_str()))
     return key == posible_contrasena;
   else
@@ -24,22 +24,20 @@ bool Clave::verifica(const char* possible_passwd){
 }
 
 std::unordered_set<Cadena> Usuario::us;
-Usuario::Usuario(const Cadena& id, Cadena nombre, Cadena apellidos, Cadena direccion, Clave passwd):
+Usuario::Usuario(const Cadena& id, const Cadena& nombre, const Cadena& apellidos, const Cadena& direccion, const Clave& passwd):
     id_(id), nombre_(nombre), apell(apellidos), dir(direccion), passwd_(passwd){
       if(!(us.insert(id_)).second)
         throw Usuario::Id_duplicado(id_);
     }
 
 void Usuario::es_titular_de(Tarjeta& t){
-  if(t.titular() == nullptr || t.titular() == this)
+  if(t.titular() == this)
     tarjetas_.insert(std::make_pair(t.numero(), &t));
 }
 
 void Usuario::no_es_titular_de(Tarjeta& t){
-  for(Usuario::Tarjetas::const_iterator i = tarjetas_.begin(); i!= tarjetas_.end(); i++){
-    if(strcmp(i->first, t.numero()) == 0)
-      tarjetas_.erase(i->first);
-  }
+    t.anula_titular();
+    tarjetas_.erase(t.numero());
 }
 
 Cadena Usuario::id() const{
@@ -59,15 +57,10 @@ const Usuario::Tarjetas& Usuario::tarjetas() const{
 }
 
 void Usuario::compra(Articulo& articulo, unsigned cantidad){
-  Usuario::Articulos::iterator i = articulos_.find(&articulo);
-  if(i == articulos_.end())
-    articulos_.insert(std::make_pair(&articulo, cantidad));
-  else{
-    if(cantidad == 0)
-      articulos_.erase(i);
-    else
-      i->second = cantidad;
-    }
+  if(cantidad == 0)
+    articulos_.erase(const_cast<Articulo*>(&articulo));
+  else
+    articulos_[const_cast<Articulo*>(&articulo)] = cantidad;
 }
 
 const Usuario::Articulos& Usuario::compra() const{

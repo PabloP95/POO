@@ -97,13 +97,15 @@ int main()
   catch(Numero::Incorrecto& e) {
     numero_incorrecto(e);
   }
+
   try {
     Tarjeta caduca(Numero("4222222222222"), lucas, "30/04/2002");
   }
   catch(Tarjeta::Caducada &e) {
     std::cerr << "Error: tarjeta caducada. " << e.cuando() << std::endl;
   }
-  try { 			// En la fecha, O = letra O, no cero (O-0)
+
+ try { 			// En la fecha, O = letra O, no cero (O-0)
     Tarjeta rota(Numero(" 4222222222222 "), lucas, "1O/O4/2O2O");
   }
   catch(Fecha::Invalida &e) {
