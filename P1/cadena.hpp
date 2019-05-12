@@ -3,6 +3,8 @@
 #include <cstring>
 #include <stdexcept>
 #include <iterator>
+#include<functional>
+#include <string>
 class Cadena{
   public:
 
@@ -82,6 +84,21 @@ Cadena operator+(const Cadena& a, const Cadena& b);
 /******************* Entrada/Salida *****************/
 std::istream& operator >> (std::istream& os, Cadena& a);
 std::ostream& operator << (std::ostream& os, const Cadena& a);
+
+
+namespace std { // Estaremos dentro del espacio de nombres std
+	template <> // Es una especialización de una plantilla para Cadena
+	struct hash<Cadena> { // Es una clase con solo un operador publico
+		size_t operator() (const Cadena& cad) const // el operador función
+		{
+			hash<string> hs; // creamos un objeto hash de string
+			const char * p = cad.c_str(); // obtenemos la cadena de la Cadena
+			string s(p); // creamos un string desde una cadena
+			size_t res = hs(s); // el hash del string. Como hs.operator()(s);
+			return res; // devolvemos el hash del string
+		}
+	};
+}
 
 
 #endif
