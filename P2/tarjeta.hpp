@@ -42,13 +42,15 @@ struct EsDigito:std::unary_function<char, bool>{
 
 class Tarjeta{
 public:
+
   class Caducada{
   public:
-    Caducada(Fecha f):f_(f){}
-    Fecha cuando() const{return f_;}
+    Caducada(Fecha f): f_cad(f){}
+    Fecha cuando() const {return f_cad;}
   private:
-    Fecha f_;
+    Fecha f_cad;
   };
+
   class Num_duplicado{
   public:
     Num_duplicado(Numero nDup): nDup_(nDup){}
@@ -60,22 +62,23 @@ public:
   class Desactivada{};
 
   enum Tipo{Otro, VISA, Mastercard, Maestro, JCB, AmericanExpress};
-  Tarjeta(Numero num, Usuario& user, Fecha fecCad);
+  Tarjeta(Numero num, Usuario& user, const Fecha& fecCad);
   Tarjeta(const Tarjeta& t) = delete;
   Tarjeta& operator=(const Tarjeta& t) = delete;
 
   Tipo tipo() const {return t_;}
   Numero numero() const {return n;}
-  Fecha caducidad() const {return fec;}
+  Fecha caducidad() const {return f;}
   const Usuario* titular() const{return u;}
-  Cadena tit_fac()const{
+  Cadena tit_fac() const {
     Cadena aux;
     aux = titular_fac;
     for(size_t i = 0; i < aux.length(); i++)
       aux[i] = toupper(aux[i]);
     return titular_fac;
   }
-  bool activa() const{return active;}
+
+  bool activa() const {return active;}
   bool activa(bool act = true);
   ~Tarjeta();
 
@@ -84,7 +87,7 @@ private:
   Tipo t_;
   Numero n;
   const Usuario* u;
-  Fecha fec;
+  Fecha f;
   bool active;
   Cadena titular_fac;
   void anula_titular();

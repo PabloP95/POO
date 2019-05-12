@@ -32,12 +32,13 @@ Numero::Numero(Cadena numero):numero_(numero){
 
 }
 std::set<Numero> Tarjeta::numeros_;
-Tarjeta::Tarjeta(Numero num, Usuario& user, Fecha fecCad):
-  n(num), u(&user), fec(fecCad){
-      if(Fecha() > fec)
-        throw Caducada(fec);
+Tarjeta::Tarjeta(Numero num, Usuario& user, const Fecha& fecCad):
+  n(num), u(&user){
+      if(fecCad < Fecha())
+        throw Tarjeta::Caducada(fecCad);
       if(!(numeros_.insert(n).second))
-        throw Num_duplicado(n);
+        throw Tarjeta::Num_duplicado(n);
+
       switch(num[0] - '0'){
         case 34 : case 37:
           t_ = Tipo::AmericanExpress;
@@ -58,7 +59,7 @@ Tarjeta::Tarjeta(Numero num, Usuario& user, Fecha fecCad):
           t_ = Tipo::Otro;
           break;
       }
-
+      f = fecCad;
       titular_fac = user.nombre() + " " + user.apellidos();
       user.es_titular_de(*this);
       active = true;
