@@ -32,7 +32,7 @@ inline unsigned& Articulo::stock(){
 }
 */
 std::ostream& operator <<(std::ostream& os, const Articulo& a){
-  os << "[" << a.referencia() << "]" << " \" " << a.titulo() << " \" " << ", " << a.f_publi().anno() <<". "
+  os << "[" << a.referencia() << "]" << " \"" << a.titulo() << "\"" << ", " << a.f_publi().anno() <<". "
   << std::fixed << std::setprecision(2) << a.precio() << " €" << std::endl;
   return os;
 }
