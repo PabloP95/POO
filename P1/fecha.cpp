@@ -72,9 +72,8 @@ Fecha& Fecha::operator -=(int days){
 }
 
 Fecha Fecha::operator +(int days) const{
-  Fecha tmp = *this;
-  tmp += days;
-  return tmp;
+  Fecha tmp(*this);
+  return tmp += days;
 }
 
 Fecha Fecha::operator -(int days) const{
@@ -132,14 +131,12 @@ void Fecha::comprobarRangoAnnos() const{
 }
 
 bool operator < (const Fecha& a, const Fecha& b){
-  if(a.anno() < b.anno())
-    return true;
-  else if(a.mes() < b.mes())
-    return true;
-  else if(a.dia() < b.dia())
-    return true;
-  else
-    return false;
+  if(a.anno() == b.anno()){
+    if(a.mes() == b.mes())
+      return (a.dia() < b.dia());
+    return (a.mes() < b.mes());
+  }
+  return (a.anno() < b.anno());
 }
 
 bool operator == (const Fecha& a, const Fecha& b){

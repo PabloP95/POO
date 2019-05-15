@@ -1,9 +1,10 @@
 #ifndef CADENA_HPP
 #define CADENA_HPP
 #include <cstring>
+#include <iomanip>
 #include <stdexcept>
 #include <iterator>
-#include<functional>
+#include <functional>
 #include <string>
 class Cadena{
   public:
