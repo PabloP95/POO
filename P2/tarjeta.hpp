@@ -42,10 +42,9 @@ struct EsDigito:std::unary_function<char, bool>{
 
 class Tarjeta{
 public:
-
   class Caducada{
   public:
-    Caducada(Fecha f): f_cad(f){}
+    Caducada(const Fecha& f): f_cad(f){}
     Fecha cuando() const {return f_cad;}
   private:
     Fecha f_cad;
@@ -53,7 +52,7 @@ public:
 
   class Num_duplicado{
   public:
-    Num_duplicado(Numero nDup): nDup_(nDup){}
+    Num_duplicado(const Numero& nDup): nDup_(nDup){}
     Numero que() const{return nDup_;}
   private:
     Numero nDup_;
@@ -62,7 +61,7 @@ public:
   class Desactivada{};
 
   enum Tipo{Otro, VISA, Mastercard, Maestro, JCB, AmericanExpress};
-  Tarjeta(Numero num, Usuario& user, const Fecha& fecCad);
+  Tarjeta(const Numero& num, Usuario& user, const Fecha& fecCad);
   Tarjeta(const Tarjeta& t) = delete;
   Tarjeta& operator=(const Tarjeta& t) = delete;
 
@@ -75,7 +74,7 @@ public:
     aux = titular_fac;
     for(size_t i = 0; i < aux.length(); i++)
       aux[i] = toupper(aux[i]);
-    return titular_fac;
+    return aux;
   }
 
   bool activa() const {return active;}

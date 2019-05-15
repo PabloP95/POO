@@ -40,34 +40,39 @@ void Usuario::no_es_titular_de(Tarjeta& t){
     tarjetas_.erase(t.numero());
 }
 
-Cadena Usuario::id() const{
+inline Cadena Usuario::id() const{
   return id_;
 }
-Cadena Usuario::nombre() const{
+inline Cadena Usuario::nombre() const{
   return nombre_;
 }
-Cadena Usuario::apellidos() const{
+inline Cadena Usuario::apellidos() const{
   return apell;
 }
-Cadena Usuario::direccion() const{
+inline Cadena Usuario::direccion() const{
   return dir;
 }
-const Usuario::Tarjetas& Usuario::tarjetas() const{
+inline const Usuario::Tarjetas& Usuario::tarjetas() const{
   return tarjetas_;
 }
 
 void Usuario::compra(Articulo& articulo, unsigned cantidad){
-  if(cantidad == 0)
-    articulos_.erase(const_cast<Articulo*>(&articulo));
-  else
-    articulos_[const_cast<Articulo*>(&articulo)] = cantidad;
+  Articulos::iterator it = articulos_.find(&articulo);
+  if(it == articulos_.end())
+    articulos_.insert(std::make_pair(&articulo, cantidad));
+  else{
+    if(cantidad == 0)
+      articulos_.erase(it);
+    else
+      it->second = cantidad;
+    }
 }
 
-const Usuario::Articulos& Usuario::compra() const{
+inline const Usuario::Articulos& Usuario::compra() const{
   return articulos_;
 }
 
-size_t Usuario::n_articulos() const{
+inline size_t Usuario::n_articulos() const{
   return articulos_.size();
 }
 
@@ -80,7 +85,7 @@ Usuario::~Usuario(){
 
 std::ostream& operator <<(std::ostream& os, const Usuario& u){
   os << u.id() << " [" << u.passwd_.clave() << "] " << u.nombre() << " " << u.apellidos() << "\n" << u.direccion()
-  << "\nTarjetas:";
+  << "\nTarjetas:" << std::endl;
   for(Usuario::Tarjetas::const_iterator i = u.tarjetas().begin(); i!=u.tarjetas().end(); i++)
     os << *i->second << std::endl;
   return os;
@@ -88,13 +93,11 @@ std::ostream& operator <<(std::ostream& os, const Usuario& u){
 
 void mostrar_carro(std::ostream& os, const Usuario& u){
   setlocale(LC_ALL, "es_ES");
-  os << "Carrito de compra de " << u.id() << " [Articulos: " << u.n_articulos() << "]\n";
-  os << "\tCant. Artículo\n";
-  os << "===========================================================";
-  unsigned cant = 1;
+  os << "\nCarrito de compra de " << u.id() << " [Artículos: " << u.n_articulos() << "]\n";
+  os << " Cant.\tArtículo\n";
+  os << "===========================================================" << std::endl;
   for(Usuario::Articulos::const_iterator i = u.compra().begin(); i != u.compra().end(); i++)
   {
-    os << cant << i->first << std::endl;
-    cant++;
+    os << "    " << i->second << "    " << *i->first;
   }
 }

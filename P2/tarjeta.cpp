@@ -32,19 +32,20 @@ Numero::Numero(Cadena numero):numero_(numero){
 
 }
 std::set<Numero> Tarjeta::numeros_;
-Tarjeta::Tarjeta(Numero num, Usuario& user, const Fecha& fecCad):
-  n(num), u(&user){
-      if(fecCad < Fecha())
-        throw Tarjeta::Caducada(fecCad);
-      if(!(numeros_.insert(n).second))
+Tarjeta::Tarjeta(const Numero& num, Usuario& user, const Fecha& fecCad):
+  n(num), u(&user), f(fecCad){
+      Fecha act;
+      if(f < act)
+        throw Tarjeta::Caducada(f);
+      if(numeros_.insert(n).second == false)
         throw Tarjeta::Num_duplicado(n);
 
-      switch(num[0] - '0'){
-        case 34 : case 37:
-          t_ = Tipo::AmericanExpress;
-          break;
+      switch(n[0] - '0'){
         case 3:
-          t_ = Tipo::JCB;
+          if(n[1] == 4 || n[1] == 7)
+            t_ = Tipo::AmericanExpress;
+          else
+            t_ = Tipo::JCB;
           break;
         case 4:
           t_ = Tipo::VISA;
@@ -59,7 +60,6 @@ Tarjeta::Tarjeta(Numero num, Usuario& user, const Fecha& fecCad):
           t_ = Tipo::Otro;
           break;
       }
-      f = fecCad;
       titular_fac = user.nombre() + " " + user.apellidos();
       user.es_titular_de(*this);
       active = true;
@@ -76,6 +76,8 @@ void Tarjeta::anula_titular(){
 }
 
 Tarjeta::~Tarjeta(){
+  std::set<Numero>::const_iterator it = numeros_.find(this->numero());
+  numeros_.erase(it);
   if(u != nullptr){
     Usuario* user = const_cast<Usuario*>(u);
     user->no_es_titular_de(*this);
@@ -94,13 +96,22 @@ bool operator < (const Numero& a, const Numero& b){
 }
 
 std::ostream& operator <<(std::ostream& os, const Tarjeta& t){
-  os << t.tipo() << "\n";
-  os << t.numero() << "\n";
-  os << t.tit_fac() << "\n";
-  os << "Caduca: ";
+  os << " -----------------------" <<std::endl;
+  os << "/                       \\" << std::endl;
+
+  if(t.tipo() == 4)
+    os << "|   " << t.tipo() << "\t\t\t|\n";
+  else
+    os << "|   " << t.tipo() << "\t\t|\n";
+
+  os << "|   " << t.numero() << "\t|\n";
+  os << "|   " << t.tit_fac() << "\t|\n";
+  os << "|   Caduca: ";
   if(t.caducidad().mes() < 10)
     os << "0";
-  os << t.caducidad().mes() << "/" << (t.caducidad().anno() % 100);
+  os << t.caducidad().mes() << "/" << (t.caducidad().anno() % 100) << "\t|" << std::endl;
+  os << "\\                      /" << std::endl;
+  os << " -----------------------";
   return os;
 }
 
